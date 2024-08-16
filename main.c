@@ -35,7 +35,7 @@ void pvp(){
         scanf("%i", &linha);    
         scanf("%i", &coluna);
 
-        if(linha > 3 || linha < 1 || coluna > 3 || coluna < 1 || isalpha(linha) || isalpha(coluna) || tabuleiro[linha - 1] == 0 || tabuleiro[coluna - 1] == 0){
+        if(linha > 3 || linha < 1 || coluna > 3 || coluna < 1 || isalpha(linha) || isalpha(coluna) || tabuleiro[linha - 1][coluna - 1] != 0){
             while(getchar() != '\n');
             continue;
         }
