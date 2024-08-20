@@ -41,22 +41,73 @@ void imprime_tabuleiro(){
     printf("\n      %i x %i\n\n", jogador[1], jogador[0]);
 }
 
+int testa_linha(int linha){
+    int soma = 0;
+    for(int i = 0; i < 3; i++){
+        soma += tabuleiro[linha][i];
+    }
+    if(soma == 3 || soma == -6){
+        return 1;
+    }
+    return 0;
+}
+
+int testa_coluna(int coluna){
+int soma = 0;
+for(int i = 0; i < 3; i++){
+    soma += tabuleiro[i][coluna];
+}
+if(soma == 3 || soma == -6){
+    return 1;
+}
+return 0;
+}
+
+int testa_diagonal_principal(){
+    int soma = 0;
+    for(int i = 0; i < 3; i++){
+        soma += tabuleiro[i][i];
+    }
+    if(soma == 3 || soma == -6){
+        return 1;
+    }
+    return 0;
+}
+
+int testa_diagonal_secundaria(){
+    int i = 0;
+    int j = 2;
+    int soma = 0;
+    while(i < 3){
+        soma += tabuleiro[i][j];
+        i += 1;
+        j -= 1;
+    }
+    if(soma == 3 || soma == -6){
+        return 1;
+    }
+    return 0;
+}
+
 int testa_vitoria(int linha, int coluna){
-    if(tabuleiro[linha][0] == tabuleiro[linha][1] && tabuleiro[linha][1] == tabuleiro[linha][2]){
+    if(testa_linha(linha)){
         return 1;
     }
-    else if(tabuleiro[0][coluna] == tabuleiro[1][coluna] && tabuleiro[1][coluna] == tabuleiro[2][coluna]){
+    if(testa_coluna(coluna)){
         return 1;
     }
-    else if((linha == coluna && linha == 1) && ((tabuleiro[0][0] == tabuleiro[1][1] && tabuleiro[1][1] == tabuleiro[2][2]) || (tabuleiro[0][2] == tabuleiro[1][1] && tabuleiro[1][1] == tabuleiro[2][0]))){
-        return 1;
+    if(linha != 1 && linha == coluna){
+        return testa_diagonal_principal();
     }
-    else if((linha == coluna && linha != 1) && (tabuleiro[0][0] == tabuleiro[1][1] && tabuleiro[1][1] == tabuleiro[2][2])){
-        return 1;
-    }   
-    else if((linha != coluna && linha != 1 && coluna != 1) && (tabuleiro[0][2] == tabuleiro[1][1] && tabuleiro[1][1] == tabuleiro[2][0])){
-        return 1;
+    if(linha != 1 && coluna != 1 && linha != coluna){
+        return testa_diagonal_secundaria();
     }
+    if(linha == 1 && coluna == 1){
+        if(testa_diagonal_principal() || testa_diagonal_secundaria()){
+            return 1;
+        }
+    }
+
     return 0;
 }
 
@@ -109,12 +160,11 @@ void jogo(){
         jogada(linha - 1, coluna - 1, jogador[2]);
         if(testa_vitoria(linha - 1, coluna - 1)){
             jogador[i % 2] += 1;
-            imprime_tabuleiro();
-            printf("Jogador %i Venceu\n", abs(jogador[2]));
             break;
         }
         i += 1;
     }
+    imprime_tabuleiro();
 }
 
 int main(){
@@ -124,6 +174,7 @@ int main(){
         zera_tabuleiro();
         jogo();
         while(opcao != 1 && opcao != 2){
+            imprime_tabuleiro();
             menu();
             scanf("%i", &opcao);
             while(getchar() != '\n'); // Limpa buffer caso seja um caractere.
