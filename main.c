@@ -4,6 +4,7 @@
 #include <math.h>
 int tabuleiro[3][3];
 int jogador[3];
+int alternador_de_jogador = 1;
 
 void menu(){
     printf("1. Jogar novamente\n");
@@ -151,35 +152,40 @@ void jogo(){
     int i = 1;
     while(i < 10){
         imprime_tabuleiro();
+        if(i == 1){
+            printf("jogador %i comeca\n", abs(define_jogador(alternador_de_jogador)));
+        }
         recebe_jogada(&linha, &coluna);
         if(valida_jogada(linha, coluna)){
             while(getchar() != '\n');
             continue;
         }
-        jogador[2] = define_jogador(i);
+        jogador[2] = define_jogador(alternador_de_jogador);
         jogada(linha - 1, coluna - 1, jogador[2]);
         if(testa_vitoria(linha - 1, coluna - 1)){
-            jogador[i % 2] += 1;
+            jogador[alternador_de_jogador % 2] += 1; // Jogador[0] = jogador 2 | Jogador[1] = jogador 1
             break;
         }
         i += 1;
+        alternador_de_jogador += 1;
     }
-    imprime_tabuleiro();
+    alternador_de_jogador -= 1;
 }
 
 int main(){
     int opcao;
+
     do{
         opcao = 0;
         zera_tabuleiro();
         jogo();
-        while(opcao != 1 && opcao != 2){
+        do{    
             imprime_tabuleiro();
             menu();
             scanf("%i", &opcao);
-            while(getchar() != '\n'); // Limpa buffer caso seja um caractere.
+            while(getchar() != '\n');
             system("cls");
-        }
-    } while(opcao != 2);
+        }while(opcao != 1 && opcao != 2);
+    }while(opcao != 2);
     return 0;
 }
